@@ -15,13 +15,19 @@
  */
 package com.example.android.sunshine;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
+import com.example.android.sunshine.data.SunshinePreferences;
+import com.example.android.sunshine.utilities.NetworkUtils;
+
+import java.io.IOException;
+import java.net.URL;
+
 public class MainActivity extends AppCompatActivity {
 
-    // TODO (1) Create a field to store the weather display TextView
     TextView mTextView;
 
     @Override
@@ -29,13 +35,38 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast);
 
-        // TODO (2) Use findViewById to get a reference to the weather display TextView
         mTextView = (TextView)findViewById(R.id.tv_weather_data);
-        // TODO (3) Create an array of Strings that contain fake weather data
-        String[] weathers = {"sunny", "cloudy", "rainy", "snowy"};
-        // TODO (4) Append each String from the fake weather data array to the TextView
-        for(String weather : weathers) {
-            mTextView.append(weather + "\n\n\n");
+
+        loadWeatherData();
+    }
+
+        public void loadWeatherData() {
+        String preferredWeatherLocation = SunshinePreferences.getPreferredWeatherLocation(this);
+
+        new NetworkRequest().execute(preferredWeatherLocation);
+    }
+
+    public class NetworkRequest extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            URL url = NetworkUtils.buildUrl(params[0]);
+
+            String str = null;
+
+            try {
+                str = NetworkUtils.getResponseFromHttpUrl(url);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return str;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if(s != null && s != "")
+                mTextView.setText(s);
         }
     }
 }

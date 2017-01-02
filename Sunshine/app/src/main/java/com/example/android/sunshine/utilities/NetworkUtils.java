@@ -15,9 +15,12 @@
  */
 package com.example.android.sunshine.utilities;
 
+import android.net.Uri;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
@@ -51,11 +54,11 @@ public final class NetworkUtils {
     private static final int numDays = 14;
 
     final static String QUERY_PARAM = "q";
-    final static String LAT_PARAM = "lat";
-    final static String LON_PARAM = "lon";
-    final static String FORMAT_PARAM = "mode";
-    final static String UNITS_PARAM = "units";
-    final static String DAYS_PARAM = "cnt";
+    final static String LAT_PARAM = "lat";      // 위도
+    final static String LON_PARAM = "lon";      // 경도
+    final static String FORMAT_PARAM = "mode";  // String format ("json")
+    final static String UNITS_PARAM = "units";  // String units ("metric")
+    final static String DAYS_PARAM = "cnt";     // int numDays (14)
 
     /**
      * Builds the URL used to talk to the weather server using a location. This location is based
@@ -65,8 +68,22 @@ public final class NetworkUtils {
      * @return The URL to use to query the weather server.
      */
     public static URL buildUrl(String locationQuery) {
-        /** This will be implemented in a future lesson **/
-        return null;
+        Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
+                .appendQueryParameter(QUERY_PARAM, locationQuery)
+                .appendQueryParameter(FORMAT_PARAM, format)
+                .appendQueryParameter(UNITS_PARAM, units)
+                .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
+                .build();
+
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
     }
 
     /**
