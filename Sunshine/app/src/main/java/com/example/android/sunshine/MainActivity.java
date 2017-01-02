@@ -18,6 +18,8 @@ package com.example.android.sunshine;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.android.sunshine.data.SunshinePreferences;
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         mTextView = (TextView)findViewById(R.id.tv_weather_data);
 
-        loadWeatherData();
+//        loadWeatherData();
     }
 
         public void loadWeatherData() {
@@ -68,5 +70,23 @@ public class MainActivity extends AppCompatActivity {
             if(s != null && s != "")
                 mTextView.setText(s);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.forecast, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int selectedItem = item.getItemId();
+
+        if(selectedItem == R.id.action_refresh ) {
+            loadWeatherData();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
