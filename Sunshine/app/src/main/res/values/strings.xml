@@ -26,6 +26,8 @@
 
     <string name="refresh">Refresh</string>
 
+    <string name="error_message">Error is occured. Please check current states.</string>
+
     <!-- - - - - - - - - - - - - -->
     <!--Used by SunshineDateUtils-->
     <!-- - - - - - - - - - - - - -->

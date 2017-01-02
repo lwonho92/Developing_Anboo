@@ -20,6 +20,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.sunshine.data.SunshinePreferences;
@@ -30,25 +32,45 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView mTextView;
+    private TextView mWeatherTextView, mErrorTextView;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast);
 
-        mTextView = (TextView)findViewById(R.id.tv_weather_data);
+        mWeatherTextView = (TextView)findViewById(R.id.tv_weather_data);
+        mErrorTextView = (TextView) findViewById(R.id.error_message);
+        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
-//        loadWeatherData();
+        loadWeatherData();
     }
 
-        public void loadWeatherData() {
+    public void loadWeatherData() {
+        showWeatherDataView();
         String preferredWeatherLocation = SunshinePreferences.getPreferredWeatherLocation(this);
 
         new NetworkRequest().execute(preferredWeatherLocation);
     }
 
+    public void showWeatherDataView() {
+        mErrorTextView.setVisibility(View.INVISIBLE);
+        mWeatherTextView.setVisibility(View.VISIBLE);
+    }
+    // TODO (9) Create a method called showErrorMessage that will hide the weather data and show the error message
+    public void showErrorMessage() {
+        mWeatherTextView.setVisibility(View.INVISIBLE);
+        mErrorTextView.setVisibility(View.VISIBLE);
+    }
+
     public class NetworkRequest extends AsyncTask<String, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
 
         @Override
         protected String doInBackground(String... params) {
@@ -67,8 +89,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            if(s != null && s != "")
-                mTextView.setText(s);
+            mProgressBar.setVisibility(View.INVISIBLE);
+
+            if(s != null && s != "") {
+                mWeatherTextView.setText(s);
+            } else {
+                showErrorMessage();
+            }
         }
     }
 
