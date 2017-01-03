@@ -26,6 +26,9 @@ import android.widget.TextView;
 
 import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.utilities.NetworkUtils;
+import com.example.android.sunshine.utilities.OpenWeatherJsonUtils;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         mErrorTextView.setVisibility(View.VISIBLE);
     }
 
-    public class NetworkRequest extends AsyncTask<String, Void, String> {
+    public class NetworkRequest extends AsyncTask<String, Void, String[]> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -73,26 +76,33 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected String[] doInBackground(String... params) {
             URL url = NetworkUtils.buildUrl(params[0]);
 
-            String str = null;
+            String[] data = null;
 
             try {
-                str = NetworkUtils.getResponseFromHttpUrl(url);
+                String str = NetworkUtils.getResponseFromHttpUrl(url);
+                data = OpenWeatherJsonUtils.getSimpleWeatherStringsFromJson(MainActivity.this, str);
+
+                return data;
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            return str;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(String[] s) {
             mProgressBar.setVisibility(View.INVISIBLE);
 
-            if(s != null && s != "") {
-                mWeatherTextView.setText(s);
+            if(s != null) {
+                for(String str : s) {
+                    mWeatherTextView.append(str + "\n\n\n");
+                }
             } else {
                 showErrorMessage();
             }
