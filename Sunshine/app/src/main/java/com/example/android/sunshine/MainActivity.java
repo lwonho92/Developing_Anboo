@@ -17,11 +17,14 @@ package com.example.android.sunshine;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -83,13 +86,11 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
         mErrorTextView.setVisibility(View.VISIBLE);
     }
 
-    Toast toast;
-
     @Override
     public void access(String str) {
         Context context = this;
-        Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-        intent.putExtra("weather", str);
+        Intent intent = new Intent(context, DetailActivity.class);
+        intent.putExtra(Intent.EXTRA_TEXT, str);
 
         startActivity(intent);
     }
@@ -153,8 +154,22 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
             mRecyclerView.setAdapter(mForecastAdapter);
             loadWeatherData();
             return true;
+        } else if(selectedItem == R.id.action_open_map) {
+            showMap();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showMap() {
+        String addr = "1600 Ampitheatre Parkway, CA";
+        Uri geoLocation = Uri.parse("geo:0,0?q=" + addr);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+
+        intent.setData(geoLocation);
+
+        if(intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 }

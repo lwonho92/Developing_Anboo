@@ -26,6 +26,9 @@
 
     <string name="refresh">Refresh</string>
 
+    <string name="action_open_map">Map</string>
+    <string name="action_share">Share</string>
+
     <string name="error_message">Error is occured. Please check current states.</string>
 
     <!-- - - - - - - - - - - - - -->
