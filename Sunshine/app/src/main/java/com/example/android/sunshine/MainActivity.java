@@ -165,16 +165,25 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
     public boolean onOptionsItemSelected(MenuItem item) {
         int selectedItem = item.getItemId();
 
-        if(selectedItem == R.id.action_refresh ) {
-            mForecastAdapter = null;
-            mForecastAdapter = new ForecastAdapter(this);
-            mRecyclerView.setAdapter(mForecastAdapter);
+        switch(selectedItem) {
+            case R.id.action_refresh:
+                mForecastAdapter = null;
+                mForecastAdapter = new ForecastAdapter(this);
+                mRecyclerView.setAdapter(mForecastAdapter);
 //            mForecastAdapter.setWeatherData(null);
 //            loadWeatherData();
-            getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
-            return true;
-        } else if(selectedItem == R.id.action_open_map) {
-            showMap();
+                getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
+
+                return true;
+            case R.id.action_open_map:
+                showMap();
+
+                return true;
+            case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
