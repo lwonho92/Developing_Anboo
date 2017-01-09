@@ -17,10 +17,12 @@ package com.example.android.sunshine;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -44,7 +46,10 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements ForecastAdapter.ForecastAdapterOnClickHandler, LoaderManager.LoaderCallbacks<String[]> {
+public class MainActivity extends AppCompatActivity implements
+        ForecastAdapter.ForecastAdapterOnClickHandler,
+        SharedPreferences.OnSharedPreferenceChangeListener,
+        LoaderManager.LoaderCallbacks<String[]> {
 
     private TextView mErrorTextView;
     private ProgressBar mProgressBar;
@@ -52,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
     private ForecastAdapter mForecastAdapter;
 
     private static final int LOADER_ID = 0;
+    private static boolean isPrefUpdate = false;
 
     public MainActivity() {}
 
@@ -72,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
     }
 
     public void showWeatherDataView() {
@@ -82,6 +90,26 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
     public void showErrorMessage() {
         mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorTextView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if(isPrefUpdate) {
+            mForecastAdapter = null;
+            mForecastAdapter = new ForecastAdapter(this);
+            mRecyclerView.setAdapter(mForecastAdapter);
+            getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
+            isPrefUpdate = false;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -190,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
     }
 
     private void showMap() {
-        String addr = "1600 Ampitheatre Parkway, CA";
+        String addr = SunshinePreferences.getPreferredWeatherLocation(this);
         Uri geoLocation = Uri.parse("geo:0,0?q=" + addr);
         Intent intent = new Intent(Intent.ACTION_VIEW);
 
@@ -199,5 +227,10 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.F
         if(intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        isPrefUpdate = true;
     }
 }
