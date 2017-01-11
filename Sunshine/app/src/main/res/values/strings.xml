@@ -33,6 +33,8 @@
 
     <string name="error_message">Error is occured. Please check current states.</string>
 
+    <string name="content_authority">com.example.android.sunshine</string>
+
     <string name="pref_location_label">Location</string>
     <string name="pref_location_key" translatable="false">location</string>
     <string name="pref_location_default" translatable="false">Mountain View, CA 94043</string>

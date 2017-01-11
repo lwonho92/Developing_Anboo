@@ -46,6 +46,11 @@
             android:name=".SettingsActivity"
             android:label="Settings">
         </activity>
+        <provider
+            android:authorities="@string/content_authority"
+            android:name=".data.WeatherProvider"
+            android:exported="false"
+            />
     </application>
 
 </manifest>
