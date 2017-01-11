@@ -3,6 +3,8 @@ package com.example.android.sunshine.data;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import com.example.android.sunshine.utilities.SunshineDateUtils;
+
 public class WeatherContract {
         public static final String CONTENT_AUTHORITY = "com.example.android.sunshine";
         public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
@@ -34,5 +36,10 @@ public class WeatherContract {
                                 .appendPath(Long.toString(date))
                                 .build();
                 }
-    }
+
+                public static String getSqlSelectForTodayOnwards() {
+                        long normalizedUtcNow = SunshineDateUtils.normalizeDate(System.currentTimeMillis());
+                        return WeatherContract.WeatherEntry.COLUMN_DATE + " >= " + normalizedUtcNow;
+                }
+        }
 }
