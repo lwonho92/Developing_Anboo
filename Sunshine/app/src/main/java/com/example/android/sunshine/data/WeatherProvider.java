@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.example.android.sunshine.data.WeatherContract.WeatherEntry;
+import com.example.android.sunshine.utilities.SunshineDateUtils;
 
 /**
  * Created by MY on 2017-01-11.
@@ -42,7 +43,42 @@ public class WeatherProvider extends ContentProvider {
 
     @Override
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
-        throw new RuntimeException("Student, you need to implement the bulkInsert mehtod!");
+        SQLiteDatabase sqLiteDatabase = mOpenHelper.getWritableDatabase();
+
+        int code = sUriMatcher.match(uri);
+        switch(code) {
+            case CODE_WEATHER:
+                sqLiteDatabase.beginTransaction();
+
+                int insertedNum = 0;
+                try {
+                    for(ContentValues value : values) {
+                        long weatherDate = value.getAsLong(WeatherEntry.COLUMN_DATE);
+
+                        if(!SunshineDateUtils.isDateNormalized(weatherDate)) {
+                            throw new IllegalArgumentException("It is not normal date form.");
+                        }
+
+                        long _id = sqLiteDatabase.insert(WeatherEntry.TABLE_NAME, null, value);
+                        if(_id > 0) {
+                            insertedNum++;
+                        }
+                    }
+                    sqLiteDatabase.setTransactionSuccessful();
+
+                } finally {
+                    sqLiteDatabase.endTransaction();
+                }
+
+                if(insertedNum > 0) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+
+                return insertedNum;
+
+            default:
+                return super.bulkInsert(uri, values);
+        }
     }
 
     @Override
