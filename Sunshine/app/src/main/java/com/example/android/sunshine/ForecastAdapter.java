@@ -49,14 +49,15 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
         @Override
         public void onClick(View v) {
-//            int adapterPosition = getAdapterPosition();
-            String dayData = mWeatherTextView.getText().toString();
-            mClickHandler.access(dayData);
+            int adapterPosition = getAdapterPosition();
+            mCursor.moveToPosition(adapterPosition);
+            long date = mCursor.getLong(MainActivity.INDEX_DATE);
+            mClickHandler.access(date);
         }
     }
 
     interface ForecastAdapterOnClickHandler {
-        public void access(String str);
+        public void access(long date);
     }
 
     public ForecastAdapter(Context context, ForecastAdapterOnClickHandler onClickHandler) {

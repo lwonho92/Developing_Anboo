@@ -104,10 +104,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void access(String str) {
+    public void access(long date) {
         Context context = this;
         Intent intent = new Intent(context, DetailActivity.class);
-        intent.putExtra(Intent.EXTRA_TEXT, str);
+        Uri uri = WeatherEntry.buildWeatherUriWithDate(date);
+        intent.setData(uri);
 
         startActivity(intent);
     }
