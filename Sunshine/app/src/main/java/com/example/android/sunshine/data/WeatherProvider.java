@@ -60,7 +60,7 @@ public class WeatherProvider extends ContentProvider {
                         }
 
                         long _id = sqLiteDatabase.insert(WeatherEntry.TABLE_NAME, null, value);
-                        if(_id > 0) {
+                        if(_id != -1) {
                             insertedNum++;
                         }
                     }
@@ -122,7 +122,7 @@ public class WeatherProvider extends ContentProvider {
         int code = sUriMatcher.match(uri);
         int itemDel;
 
-        if(selection == "")
+        if(selection == null)
             selection = "1";
 
         switch(code) {
@@ -135,7 +135,7 @@ public class WeatherProvider extends ContentProvider {
                 throw new UnsupportedOperationException("No match Uri: " + uri);
         }
 
-        if(itemDel > 0) {
+        if(itemDel != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
