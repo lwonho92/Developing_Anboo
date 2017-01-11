@@ -118,7 +118,28 @@ public class WeatherProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        throw new RuntimeException("Student, you need to implement the delete method!");
+        SQLiteDatabase sqLiteDatabase = mOpenHelper.getWritableDatabase();
+        int code = sUriMatcher.match(uri);
+        int itemDel;
+
+        if(selection == "")
+            selection = "1";
+
+        switch(code) {
+            case CODE_WEATHER:
+                itemDel = sqLiteDatabase.delete(WeatherContract.WeatherEntry.TABLE_NAME, selection, selectionArgs);
+
+                break;
+
+            default:
+                throw new RuntimeException("No match Uri: " + uri);
+        }
+
+        if(itemDel > 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return itemDel;
     }
 
     @Override
