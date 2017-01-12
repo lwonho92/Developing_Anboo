@@ -15,7 +15,10 @@
  */
 package com.example.android.sunshine.utilities;
 
+import android.content.Context;
 import android.net.Uri;
+
+import com.example.android.sunshine.data.SunshinePreferences;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,6 +62,18 @@ public final class NetworkUtils {
     final static String FORMAT_PARAM = "mode";  // String format ("json")
     final static String UNITS_PARAM = "units";  // String units ("metric")
     final static String DAYS_PARAM = "cnt";     // int numDays (14)
+
+    public static URL getUrl(Context context) {
+        if (SunshinePreferences.isLocationLatLonAvailable(context)) {
+            double[] preferredCoordinates = SunshinePreferences.getLocationCoordinates(context);
+            double latitude = preferredCoordinates[0];
+            double longitude = preferredCoordinates[1];
+            return buildUrl(latitude, longitude);
+        } else {
+            String locationQuery = SunshinePreferences.getPreferredWeatherLocation(context);
+            return buildUrl(locationQuery);
+        }
+    }
 
     /**
      * Builds the URL used to talk to the weather server using a location. This location is based
