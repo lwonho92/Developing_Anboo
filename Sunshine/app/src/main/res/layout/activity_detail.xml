@@ -7,35 +7,42 @@
     <TextView
         android:id="@+id/selected_date"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="22sp"/>
 
     <TextView
         android:id="@+id/selected_description"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="22sp"/>
 
     <TextView
         android:id="@+id/selected_max_temp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="22sp"/>
 
     <TextView
         android:id="@+id/selected_min_temp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="22sp"/>
 
     <TextView
         android:id="@+id/selected_humidity"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="22sp"/>
 
     <TextView
         android:id="@+id/selected_pressure"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="22sp"/>
 
     <TextView
         android:id="@+id/selected_wind"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="22sp"/>
 </LinearLayout>
